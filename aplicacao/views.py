@@ -1,4 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from .models import Produto
 
 def index(request):
     context = {'curso': 'Desenvolvimento de Sistemas'}
@@ -7,3 +9,52 @@ def index(request):
 def contato(request):
     context = {'curso': 'Desenvolvimento de Sistemas'}
     return render(request, 'contato.html', context)
+
+def produto(request):
+    produtos = Produto.objects.all()
+    context = {'produtos': produtos}
+    return render(request, "produto.html", context)
+
+def cadastrarProduto(request):
+    return render(request, "cadastrarProduto.html")
+
+def salvarProduto(request):
+    thisnome = request.POST.get('txtNome')
+    thispreco = request.POST.get('txtPreco')
+    thisqtde = request.POST.get('txtQtde')
+    thisdata = request.POST.get('txtData')
+    thisdescricao = request.POST.get('txtDescricao')
+
+    produto = Produto(
+        nome = thisnome,
+        preco = float(thispreco),
+        qtde = thisqtde,
+        data = thisdata,
+        descricao = thisdescricao
+    )
+
+    produto.save()
+    return redirect('urlproduto')
+
+def editarProduto(request, id):
+    produto = Produto.objects.get(id=id)
+
+    if request.method == "GET":
+        context = {'p': produto}
+        return render(request, "editarProduto.html", context)
+    else:
+        thisnome = request.POST.get('txtNome')
+        thispreco = request.POST.get('txtPreco').replace(',', '.')
+        thisqtde = request.POST.get('txtQtde')
+        thisdata = request.POST.get('txtData')
+        thisdescricao = request.POST.get('txtDescricao')
+
+        produto.nome = thisnome
+        produto.preco = float(thispreco)
+        produto.qtde = thisqtde
+        produto.data = thisdata
+        produto.descricao = thisdescricao
+
+        produto.save()
+        return redirect('urlproduto')
+    
