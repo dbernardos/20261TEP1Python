@@ -4,7 +4,7 @@ from .views import cadastrarProduto, salvarProduto, editarProduto, excluirProdut
 from .views import cadastrarUsuario
 
 urlpatterns = [
-    path('', index),
+    path('', index, name="urlindex"),
     path('contato', contato, name="urlcontato"),
     path('produto', produto, name="urlproduto"),
     path('cadastrarProduto', cadastrarProduto, name="urlcadastrarProduto"),
