@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .form import UsuarioForm
+from .carrinho import Carrinho
 
 def index(request):
     produtos = Produto.objects.all()
@@ -29,13 +30,15 @@ def salvarProduto(request):
     thisqtde = request.POST.get('txtQtde')
     thisdata = request.POST.get('txtData')
     thisdescricao = request.POST.get('txtDescricao')
+    thisimagem = request.FILES.get('imagem')
 
     produto = Produto(
         nome = thisnome,
         preco = float(thispreco),
         qtde = thisqtde,
         data = thisdata,
-        descricao = thisdescricao
+        descricao = thisdescricao,
+        imagem = thisimagem
     )
 
     produto.save()
@@ -79,7 +82,7 @@ def entrar(request):
 
         if user:
             login(request, user)
-            return redirect('urlproduto')
+            return redirect('urlindex')
         messages.error(request, "Falha na autenticação!")    
         return render(request, 'entrar.html')
 
@@ -97,3 +100,20 @@ def cadastrarUsuario(request):
         if form.is_valid():
             form.save()
             return redirect('urlentrar')
+
+def carrinho(request):
+    carrinho = Carrinho(request)
+    return render(request, 'carrinho.html', {'carrinho': carrinho})
+
+def addcarrinho(request, id):
+    produto = get_object_or_404(Produto, id=id)
+    carrinho = Carrinho(request)
+    carrinho.adicionar(produto=produto)
+    return redirect('carrinho.html')
+
+def delcarrinho(request):
+    return HttpResponse('del carrinho')
+
+def finalizarCompra(request):
+    return HttpResponse('finalizar compra')
+    
