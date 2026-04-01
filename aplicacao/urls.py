@@ -26,6 +26,8 @@ urlpatterns = [
     ### CARRINHO
     path('vercarrinho', views.vercarrinho, name="urlvercarrinho"),
     path('vercarrinho/atualizar/<int:item_id>/', views.atualizarcarrinho, name="urlatualizarcarrinho"),
+    path('vercarrinho/adicionar/<int:produto_id>/', views.adicionarcarrinho, name="urladicionarcarrinho"),
+    path('vercarrinho/finzalizar/', views.finalizarcompra, name="urlfinalizarcompra"),
 
 ]
 

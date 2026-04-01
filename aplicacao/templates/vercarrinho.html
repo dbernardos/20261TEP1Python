@@ -3,6 +3,12 @@
   <div class="container mt-5">
     <h2>Seu carrinho de Compras</h2>
 
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+
     <div class="row">
       <div class="col-md-8">
         <table class="table">
@@ -21,21 +27,21 @@
                 <td>{{ item.produto.nome }}</td>
                 <td>R${{ item.produto.preco }}</td>
                 <td>
-                    <form action="{% url 'urlatualizarcarrinho' item.id %}" method="POST">
-                        {% csrf_token %}
-                        <div class="btn-group">
-                            <button type="submit" name="acao" value="diminuir" class="btn btn-sm btn-secondary">-</button>
-                            <span class="btn btn-sm btn-light disabled">{{ item.qtde }}</span>
-                            <button type="submit" name="acao" value="aumentar" class="btn btn-sm btn-secondary">+</button>
-                        </div>
-                    </form>
+                  <form action="{% url 'urlatualizarcarrinho' item.id %}" method="POST">
+                    {% csrf_token %}
+                    <div class="btn-group">
+                      <button type="submit" name="acao" value="diminuir" class="btn btn-sm btn-secondary">-</button>
+                      <span class="btn btn-sm btn-light disabled">{{ item.qtde }}</span>
+                      <button type="submit" name="acao" value="aumentar" class="btn btn-sm btn-secondary">+</button>
+                    </div>
+                  </form>
                 </td>
                 <td>R${{ item.subtotal }}</td>
                 <td>
-                    <form action="{% url 'urlatualizarcarrinho' item.id %}" style="display:inline;" method="POST">
-                        {% csrf_token %}
-                        <button type="submit" name="acao" value="remover" class="btn btn-sm btn-danger">X</button>
-                    </form>
+                  <form action="{% url 'urlatualizarcarrinho' item.id %}" style="display:inline;" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" name="acao" value="remover" class="btn btn-sm btn-danger">X</button>
+                  </form>
                 </td>
               </tr>
             {% empty %}
@@ -45,6 +51,34 @@
             {% endfor %}
           </tbody>
         </table>
+        <a href="{% url 'urlindex' %}" class="btn btn-primary">Continuar comprando</a>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header">Resumo do Pedido</div>
+          <div class="card-body">
+            <h4>Total: R$ {{ venda.total }}</h4>
+            <hr />
+            <h5>Endereço de Entrega</h5>
+            {% if perfil %}
+            <p>
+                {{ perfil.rua }}, {{ perfil.numero }} <br />
+                {{ perfil.bairro }} - {{ perfil.cidade }} <br />
+                CEP: {{ perfil.cep }}
+            </p>
+            {% else %}
+              <p class="text-danger">Endereço não cadastrado</p>  
+            {% endif %}
+            <hr />
+            <form action="{% url 'urlfinalizarcompra' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success btn-block" {% if not perfil %}disabled{% endif %}>
+                    Finalizar Compra
+                </button>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   </div>

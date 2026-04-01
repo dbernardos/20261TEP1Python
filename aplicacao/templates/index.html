@@ -25,7 +25,7 @@
               <small class="text-muted">R${{ p.preco }}</small>
               {% if user.is_authenticated %}
                 <div class="btn-comprar">
-                  <a href="{% url 'urladdcarrinho' p.id %}" class="btn btn-primary">Comprar</a>
+                  <a href="{% url 'urladicionarcarrinho' p.id %}" class="btn btn-primary">Comprar</a>
                 </div>
               {% endif %}
             </div>
