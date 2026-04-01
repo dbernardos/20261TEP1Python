@@ -26,11 +26,24 @@ class Perfil(models.Model):
         return f'Perfil de {self.cliente.username}'
 
 class Venda(models.Model):
+    STATUS_CHOICES = (
+        ('P', 'PENDENTE'),
+        ('C', 'CONCLUIDA'),
+        ('X', 'CANCELADA')
+    )
+    status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='P')
     data = models.DateField(auto_now_add=True)
     cliente = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.data
+        return f'Venda {self.id} - {self.cliente.username} ({self.get_status_display()})'
+
+    @property
+    def total(self):
+        total = 0
+        for item in self.itemvenda_set_all():
+            total += item.produto.preco * item.qtde
+        return total
 
 class ItemVenda(models.Model):
     venda = models.ForeignKey(Venda, on_delete=models.CASCADE)
@@ -39,6 +52,10 @@ class ItemVenda(models.Model):
 
     def __str__(self):
         return f'{self.produto.nome}'
+
+    @property
+    def subtotal(self):
+        return self.produto.preco * self.qtde
 
 
 
