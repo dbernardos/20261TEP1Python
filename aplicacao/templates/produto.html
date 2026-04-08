@@ -26,7 +26,7 @@
       {% for p in produtos %}
         <tbody>
           <tr>
-            <th scope="row">{{ p.id }}</th>
+            <th scope="row">{{ forloop.counter }}</th>
             <td>{{ p.nome }}</td>
             <td>R${{ p.preco }}</td>
             <td>{{ p.qtde }}</td>

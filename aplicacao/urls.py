@@ -29,6 +29,8 @@ urlpatterns = [
     path('vercarrinho/adicionar/<int:produto_id>/', views.adicionarcarrinho, name="urladicionarcarrinho"),
     path('vercarrinho/finzalizar/', views.finalizarcompra, name="urlfinalizarcompra"),
 
+    path('historico/', views.historico_pedidos, name="urlhistorico"),
+    path('pedido/<int:venda_id>', views.detalhe_pedido, name="urldetalhe_pedido"),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

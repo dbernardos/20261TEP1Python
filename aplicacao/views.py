@@ -8,6 +8,37 @@ from .form import UsuarioForm
 from .carrinho import Carrinho
 
 
+@login_required
+def detalhe_pedido(request, venda_id):
+    venda = get_object_or_404(Venda, id=venda_id, cliente=request.user)
+
+    if venda.cliente != request.user:
+        return redirect("historico_pedidos")
+
+    itens = venda.itemvenda_set.all()
+
+    try:
+        perfil = Perfil.objects.get(cliente=request.user)
+    except Perfil.DoesNotExist:
+        perfil = None
+
+    context = {
+        'venda': venda,
+        'itens': itens,
+        'perfil': perfil
+    }
+
+    return render(request, 'detalhe_pedido.html', context)
+
+@login_required
+def historico_pedidos(request):
+    pedidos = Venda.objects.filter(
+        cliente = request.user,
+        status = 'C'
+    ).order_by('-data')
+    
+    return render(request, 'historico_pedidos.html', {'pedidos': pedidos}) 
+
 ### CARRINHO #######
 def get_or_create_carrinho(request):
     venda, created = Venda.objects.get_or_create(
